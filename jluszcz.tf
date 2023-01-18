@@ -64,14 +64,6 @@ resource "aws_s3_bucket_policy" "site" {
   policy = data.aws_iam_policy_document.site.json
 }
 
-resource "aws_s3_object" "site" {
-  bucket       = aws_s3_bucket.site.id
-  key          = "index.html"
-  source       = "index.html"
-  content_type = "text/html"
-  etag         = filemd5("index.html")
-}
-
 resource "aws_acm_certificate" "cert" {
   provider                  = aws
   domain_name               = var.site_url
