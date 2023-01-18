@@ -187,3 +187,24 @@ resource "aws_route53_record" "record_www" {
     evaluate_target_health = false
   }
 }
+
+resource "aws_iam_user" "github" {
+  name = "github.${var.site_url}"
+}
+
+data "aws_iam_policy_document" "github" {
+  statement {
+    actions   = ["s3:PutObject"]
+    resources = ["${aws_s3_bucket.site.arn}/index.html"]
+  }
+}
+
+resource "aws_iam_policy" "github" {
+  name   = "${var.site_url}.github"
+  policy = data.aws_iam_policy_document.github.json
+}
+
+resource "aws_iam_user_policy_attachment" "github" {
+  user       = aws_iam_user.github.name
+  policy_arn = aws_iam_policy.github.arn
+}
