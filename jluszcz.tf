@@ -4,6 +4,7 @@ terraform {
 
 # Sourced from environment variables named TF_VAR_${VAR_NAME}
 variable "aws_acct_id" {}
+variable "bluesky" {}
 
 variable "site_name" {
   type    = string
@@ -156,7 +157,7 @@ resource "aws_route53_zone" "zone" {
   comment = "${var.site_name} Hosted Zone"
 }
 
-resource "aws_route53_record" "record" {
+resource "aws_route53_record" "site" {
   zone_id = aws_route53_zone.zone.zone_id
   name    = var.site_url
   type    = "A"
@@ -168,7 +169,7 @@ resource "aws_route53_record" "record" {
   }
 }
 
-resource "aws_route53_record" "record_www" {
+resource "aws_route53_record" "site_www" {
   zone_id = aws_route53_zone.zone.zone_id
   name    = "www.${var.site_url}"
   type    = "A"
@@ -178,6 +179,14 @@ resource "aws_route53_record" "record_www" {
     zone_id                = aws_cloudfront_distribution.site.hosted_zone_id
     evaluate_target_health = false
   }
+}
+
+resource "aws_route53_record" "atproto" {
+  zone_id = aws_route53_zone.zone.zone_id
+  name    = "_atproto.${var.site_url}"
+  type    = "TXT"
+  ttl     = "86400"
+  records = ["did=did:plc:${var.bluesky}"]
 }
 
 resource "aws_iam_openid_connect_provider" "github" {
