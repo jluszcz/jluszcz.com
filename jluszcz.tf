@@ -210,7 +210,7 @@ resource "aws_iam_policy" "github" {
 }
 
 resource "aws_iam_role" "github" {
-  name = "github.${var.site_url}"
+  name = "${var.site_url}.github"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
