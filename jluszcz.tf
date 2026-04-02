@@ -37,6 +37,47 @@ resource "aws_s3_bucket_public_access_block" "site" {
   restrict_public_buckets = true
 }
 
+resource "aws_s3_bucket_server_side_encryption_configuration" "site" {
+  bucket = aws_s3_bucket.site.id
+
+  rule {
+    apply_server_side_encryption_by_default {
+      sse_algorithm = "aws:kms"
+    }
+    bucket_key_enabled = true
+  }
+}
+
+resource "aws_s3_bucket_lifecycle_configuration" "site" {
+  bucket = aws_s3_bucket.site.id
+
+  rule {
+    id     = "delete-old-versions-rule"
+    status = "Enabled"
+
+    noncurrent_version_expiration {
+      noncurrent_days = 30
+    }
+  }
+
+  rule {
+    id     = "abort-mpu"
+    status = "Enabled"
+
+    abort_incomplete_multipart_upload {
+      days_after_initiation = 7
+    }
+  }
+}
+
+resource "aws_s3_bucket_versioning" "site" {
+  bucket = aws_s3_bucket.site.id
+
+  versioning_configuration {
+    status = "Enabled"
+  }
+}
+
 resource "aws_s3_bucket_website_configuration" "site" {
   bucket = aws_s3_bucket.site.id
 
