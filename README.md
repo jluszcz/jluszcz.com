@@ -1,6 +1,6 @@
 # [jluszcz.com](https://jluszcz.com)
 
-[![Status Badge](https://github.com/jluszcz/jluszcz.com/actions/workflows/upload-to-s3.yml/badge.svg)](https://github.com/jluszcz/jluszcz.com/actions/workflows/upload-to-s3.yml)
+[![Status Badge](https://github.com/jluszcz/jluszcz.com/actions/workflows/minify-and-upload-to-s3.yml/badge.svg)](https://github.com/jluszcz/jluszcz.com/actions/workflows/minify-and-upload-to-s3.yml)
 
 Jacob Luszcz's personal website — a static HTML page with social media links.
 
@@ -21,4 +21,5 @@ Managed with Terraform (state stored in S3 at `jluszcz-tf-state`):
 
 ## Deployment
 
-Pushing changes to `index.html` on `main` triggers the [Upload to S3](.github/workflows/upload-to-s3.yml) GitHub Actions workflow, which assumes an IAM role via OIDC and syncs the file to the S3 bucket.
+Pushing changes to `index.html` on `main` triggers the [Upload to S3](.github/workflows/upload-to-s3.yml) GitHub Actions workflow,
+which assumes an IAM role via OIDC and syncs the file to the S3 bucket.

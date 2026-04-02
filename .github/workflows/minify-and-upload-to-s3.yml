@@ -1,4 +1,4 @@
-name: Upload to S3
+name: Minify and Upload to S3
 
 on:
   push:
@@ -8,7 +8,7 @@ on:
       - index.html
 
 jobs:
-  upload-to-s3:
+  minify-and-upload-to-s3:
     permissions:
       id-token: write
       contents: read
@@ -18,6 +18,16 @@ jobs:
     steps:
       - name: Check Out Code
         uses: actions/checkout@v6
+
+      - name: Minify HTML
+        run: |
+          npx html-minifier-terser \
+            --collapse-whitespace \
+            --remove-comments \
+            --minify-css true \
+            --minify-js true \
+            -o index.min \
+            index.html
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v6.0.0
@@ -29,4 +39,4 @@ jobs:
       - name: Upload to S3
         env:
           AWS_DEFAULT_REGION: us-east-1
-        run: aws s3 cp index.html s3://jluszcz.com/index.html
+        run: aws s3 cp index.min s3://jluszcz.com/index.html
