@@ -37,4 +37,23 @@ jobs:
       - name: Upload to S3
         env:
           AWS_DEFAULT_REGION: us-east-1
-        run: aws s3 cp index.min s3://jluszcz.com/index.html
+        # index.min has no file extension, so the CLI infers no MIME type and
+        # defaults to binary/octet-stream. Set it explicitly.
+        run: aws s3 cp index.min s3://jluszcz.com/index.html --content-type "text/html; charset=utf-8"
+
+      - name: Invalidate CloudFront
+        env:
+          AWS_DEFAULT_REGION: us-east-1
+          DISTRIBUTION_ID: ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }}
+        run: |
+          # The cache TTLs are up to 24h, so without this a deploy is not live.
+          # Wait for completion so a green check means the new page is served.
+          invalidation_id="$(aws cloudfront create-invalidation \
+            --distribution-id "$DISTRIBUTION_ID" \
+            --paths '/*' \
+            --query 'Invalidation.Id' \
+            --output text)"
+
+          aws cloudfront wait invalidation-completed \
+            --distribution-id "$DISTRIBUTION_ID" \
+            --id "$invalidation_id"

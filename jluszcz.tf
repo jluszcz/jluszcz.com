@@ -243,9 +243,21 @@ resource "aws_iam_openid_connect_provider" "github" {
 }
 
 data "aws_iam_policy_document" "github" {
+  # Scoped to the single object the deploy writes. Adding any second file to the
+  # site therefore needs this widened and applied before the deploy will work.
   statement {
     actions   = ["s3:PutObject"]
     resources = ["${aws_s3_bucket.site.arn}/index.html"]
+  }
+
+  # Without an invalidation, a deploy is not live until the cache TTLs expire.
+  statement {
+    actions = [
+      "cloudfront:CreateInvalidation",
+      "cloudfront:GetInvalidation",
+    ]
+
+    resources = [aws_cloudfront_distribution.site.arn]
   }
 }
 
@@ -282,4 +294,10 @@ resource "aws_iam_role" "github" {
 resource "aws_iam_role_policy_attachment" "github" {
   role       = aws_iam_role.github.name
   policy_arn = aws_iam_policy.github.arn
+}
+
+# Set as the CLOUDFRONT_DISTRIBUTION_ID repository secret; the deploy workflow
+# reads it to invalidate the cache. See README.md → Deployment.
+output "cloudfront_distribution_id" {
+  value = aws_cloudfront_distribution.site.id
 }
