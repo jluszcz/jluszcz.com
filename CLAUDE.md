@@ -21,6 +21,23 @@ Because the bucket blocks public access and is readable only through
 CloudFront's OAC, a file `index.html` references but that was never uploaded
 returns **403, not 404**. Don't read that as a permissions bug.
 
+## The bucket must use SSE-S3
+
+`sse_algorithm` is `AES256`, and changing it to `aws:kms` takes the whole site
+down with `403 AccessDenied` (`server: AmazonS3`). CloudFront's OAC fetches the
+origin as the `cloudfront.amazonaws.com` service principal, which needs
+`kms:Decrypt` granted in the KMS *key policy*. With no `kms_master_key_id` S3
+uses the AWS-managed `aws/s3` key, whose policy cannot be edited — so OAC can
+never decrypt the object, no matter how correct the bucket policy looks.
+
+A customer-managed key would work, but it also needs `kms:GenerateDataKey` and
+`kms:Encrypt` added to the GitHub deploy role. The page is public by design, so
+KMS buys no confidentiality here.
+
+Changing this setting does **not** re-encrypt `index.html` — S3 default
+encryption only applies to new objects. After the apply, re-upload the object
+(pushing to `main` does it) or the old KMS-encrypted version keeps 403ing.
+
 ## Uploads must set `--content-type` explicitly
 
 The minified HTML is written to `index.min`, which has no file extension, so the
