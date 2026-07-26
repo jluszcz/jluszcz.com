@@ -238,23 +238,8 @@ resource "aws_route53_record" "atproto" {
   records = ["did=did:plc:${var.bluesky}"]
 }
 
-# There is one OIDC provider per AWS account, and it is owned by the
-# AmazonWebServices repo. Declaring it as a resource here made two Terraform
-# states manage the same object, so applying either one reverted the other's
-# changes. Every other project repo references it as a data source; this now
-# matches them.
 data "aws_iam_openid_connect_provider" "github" {
   url = "https://token.actions.githubusercontent.com"
-}
-
-# Drops the resource from this state without touching the provider in AWS.
-# Delete this block once it has been applied — see the PR description.
-removed {
-  from = aws_iam_openid_connect_provider.github
-
-  lifecycle {
-    destroy = false
-  }
 }
 
 data "aws_iam_policy_document" "github" {
