@@ -238,9 +238,6 @@ resource "aws_route53_record" "atproto" {
   records = ["did=did:plc:${var.bluesky}"]
 }
 
-# There is one OIDC provider per AWS account, owned by the AmazonWebServices
-# repo. Reference it, never declare it: two states managing the same object
-# means applying either one reverts the other's changes.
 data "aws_iam_openid_connect_provider" "github" {
   url = "https://token.actions.githubusercontent.com"
 }
