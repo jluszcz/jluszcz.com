@@ -1,0 +1,22 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+
+    paths:
+      - '**/*.tf'
+      - '.github/workflows/ci.yml'
+      - '.terraform.lock.hcl'
+
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  terraform:
+    uses: jluszcz/github-utils/.github/workflows/terraform-ci.yml@v2

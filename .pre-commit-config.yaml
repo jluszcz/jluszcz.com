@@ -11,3 +11,11 @@ repos:
     -   id: file-contents-sorter
         files: .gitignore
     -   id: trailing-whitespace
+-   repo: https://github.com/antonbabenko/pre-commit-terraform
+    rev: v1.108.1
+    hooks:
+    # Both run offline; neither needs AWS credentials.
+    -   id: terraform_fmt
+    -   id: terraform_validate
+        args:
+            - --tf-init-args=-backend=false

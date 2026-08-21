@@ -2,8 +2,10 @@
 
 Single-page personal site: one hand-written `index.html` and `jluszcz.tf` for all
 the AWS infrastructure. There is no build system, no package.json, and no test
-suite — the only automated checks are `pre-commit` (see
-`.pre-commit-config.yaml`) and `terraform fmt`/`validate`.
+suite — the only automated checks are `terraform fmt`/`validate`, run both
+by `pre-commit` (see `.pre-commit-config.yaml`) and by
+`.github/workflows/ci.yml`, a thin caller of
+`jluszcz/github-utils/.github/workflows/terraform-ci.yml`.
 
 See `README.md` for the infrastructure overview and deploy steps.
 
