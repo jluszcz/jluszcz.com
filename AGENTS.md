@@ -1,4 +1,4 @@
-# CLAUDE.md
+# AGENTS.md
 
 Single-page personal site: one hand-written `index.html` and `jluszcz.tf` for all
 the AWS infrastructure. There is no build system, no package.json, and no test
