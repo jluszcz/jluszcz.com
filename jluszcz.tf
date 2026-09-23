@@ -40,7 +40,7 @@ resource "aws_s3_bucket_public_access_block" "site" {
 # Must stay SSE-S3. CloudFront's OAC reads the origin as the
 # cloudfront.amazonaws.com service principal, which needs kms:Decrypt granted in
 # the *key policy* — impossible for the AWS-managed aws/s3 key. Under aws:kms
-# every viewer request 403s. See CLAUDE.md → "The bucket must use SSE-S3".
+# every viewer request 403s. See AGENTS.md → "The bucket must use SSE-S3".
 resource "aws_s3_bucket_server_side_encryption_configuration" "site" {
   bucket = aws_s3_bucket.site.id
 
