@@ -2,10 +2,13 @@
 
 Single-page personal site: one hand-written `index.html` and `jluszcz.tf` for all
 the AWS infrastructure. There is no build system, no package.json, and no test
-suite — the only automated checks are `terraform fmt`/`validate`, run both
-by `pre-commit` (see `.pre-commit-config.yaml`) and by
+suite. The automated checks are `terraform fmt`/`validate`, run both by
+`pre-commit` (see `.pre-commit-config.yaml`) and by
 `.github/workflows/ci.yml`, a thin caller of
-`jluszcz/github-utils/.github/workflows/terraform-ci.yml`.
+`jluszcz/github-utils/.github/workflows/terraform-ci.yml`; and HTML/CSS
+validation of `index.html` with the W3C Nu validator (`vnu-jar`), run only in
+CI's `html` job so local development needs no Java. Dependabot does not bump
+the `vnu-jar` pin in that job.
 
 See `README.md` for the infrastructure overview and deploy steps.
 
