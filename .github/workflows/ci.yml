@@ -6,9 +6,9 @@ on:
       - main
 
     paths:
-      - '**/*.tf'
       - '.github/workflows/ci.yml'
       - 'index.html'
+      - '**/*.tf'
       - '.terraform.lock.hcl'
 
   pull_request:
@@ -26,7 +26,5 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-
-      # W3C Nu validator; also checks the inline <style>. The runner ships Java.
       - name: Validate HTML/CSS
         run: npx --yes vnu-jar@26.11.4 --also-check-css --Werror index.html
