@@ -27,4 +27,4 @@ jobs:
     steps:
       - uses: actions/checkout@v7
       - name: Validate HTML/CSS
-        run: npx --yes vnu-jar@26.11.4 --also-check-css --Werror index.html
+        run: npx --yes vnu-jar@26.11.19 --also-check-css --Werror index.html
